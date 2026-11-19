@@ -56,21 +56,9 @@ This repository contains my personal configuration files for NeoVim, organized w
 
 ## Installation
 
-1. Prerequisites:
+Installed as part of the [dotfiles](../README.md) repo, which symlinks this folder to `~/.config/nvim`. Requires Neovim 0.12+, the `tree-sitter` CLI (`brew install tree-sitter-cli`), Node.js, ripgrep and a Nerd Font. Launch `nvim` once to let lazy.nvim and Mason install everything.
 
-   - NeoVim 0.9.0 or higher
-   - Git
-   - Node.js (for LSP servers)
-   - A Nerd Font (for icons)
-   - ripgrep (for Telescope grep functionality)
-
-2. Clone this repository:
-
-   git clone https://github.com/yourusername/nvim-config.git ~/.config/nvim
-
-3. Launch NeoVim to automatically install plugins:
-
-   nvim
+Machine-specific settings (Obsidian vaults) go in the gitignored `lua/rpn/local.lua`; copy `lua/rpn/local.example.lua`.
 
 ## Key Mappings
 
@@ -574,6 +562,15 @@ To customize this setup:
 3. Adjust general settings in `lua/rpn/options.lua`
 4. Add new plugins by creating files in the plugins directory
 
+## Maintenance rules
+
+- LSP uses the Neovim 0.11+ `vim.lsp.config()` / `vim.lsp.enable()` API in `lua/rpn/plugins/lsp/lspconfig.lua`. Never use `lspconfig.setup()`.
+- Treesitter is managed by `romus204/tree-sitter-manager.nvim`. Never reintroduce `nvim-treesitter`: it breaks on 0.12+. tree-sitter-manager provides no indent; incremental selection is a native module (`lua/rpn/core/treesitter-incsel.lua`).
+- A language that parses but shows no colors is missing its highlight queries. Fix with `:TSUninstall <lang>` then `:TSInstall <lang>`; a plain `:TSInstall` skips it.
+- Orgmode installs its own `org` parser. Do not add `org` to tree-sitter-manager.
+- Format on save uses conform.nvim formatters only (`lsp_fallback = false` is intentional). ESLint fixes on save run separately from the LSP autocmd.
+- Things 3: never touch the Things SQLite database, not even read-only. Write through the `things:///` URL scheme, read through JXA with bulk property fetches. See [lua/rpn/things/README.md](lua/rpn/things/README.md).
+- `lua/rpn/telescope/tmux.lua` vendors the telescope-tmux pickers so the current session is listed. `~/.tmux.conf` calls `:Telescope tmux sessions|windows`, so keep those names.
 ## Troubleshooting
 
 - Run `:checkhealth` to diagnose issues
