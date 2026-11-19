@@ -5,25 +5,30 @@
 -- https://github.com/hedyhli/outline.nvim?tab=readme-ov-file#related-plugins
 --
 return {
-	"hedyhli/outline.nvim",
-	lazy = true,
-	cmd = { "Outline", "OutlineOpen" },
-	keys = { -- Example mapping to toggle outline
-		{ "<leader>oo", "<cmd>Outline<CR>", desc = "Toggle outline" },
-	},
-	opts = {
-		outline_window = {
-			-- Vim options for the outline window
-			show_numbers = true,
-			show_relative_numbers = true,
-			width = 25,
-		},
+  "hedyhli/outline.nvim",
+  lazy = true,
+  cmd = { "Outline", "OutlineOpen" },
+  keys = { -- Example mapping to toggle outline
+    { "<leader>oo", "<cmd>Outline<CR>", desc = "Toggle outline" },
+  },
+  opts = {
+    outline_window = {
+      -- Vim options for the outline window
+      show_numbers = true,
+      show_relative_numbers = true,
+      width = 25,
+    },
 
-		symbol_folding = {
-			-- Unfold entire symbol tree by default with false, otherwise enter a
-			-- number starting from 1
-			autofold_depth = 1,
-			-- autofold_depth = 1,
-		},
-	},
+    symbol_folding = {
+      -- Unfold entire symbol tree by default with false, otherwise enter a
+      -- number starting from 1
+      autofold_depth = false,
+    },
+
+    -- Default <C-j>/<C-k> shadow vim-tmux-navigator pane switching
+    keymaps = {
+      down_and_jump = "<M-j>",
+      up_and_jump = "<M-k>",
+    },
+  },
 }
