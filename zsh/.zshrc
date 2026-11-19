@@ -79,6 +79,10 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting web-search)
 
+# Extra completion paths; must be set before oh-my-zsh runs compinit
+[ -d "$HOME/.daml/zsh" ] && fpath=("$HOME/.daml/zsh" $fpath)
+[ -d "${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-completions" ] && fpath=("${HOMEBREW_PREFIX:-/opt/homebrew}/share/zsh-completions" $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -129,6 +133,159 @@ setopt hist_verify
 # completion using arrow keys (based on history)
 bindkey '^[[A' history-search-backward
 bindkey '^[[B' history-search-forward
+
+# Alias copy project
+copyprojectfunc() {
+  local EXCLUDES=(
+    .git
+    node_modules
+    build
+    dist
+    vendor
+    target
+    __pycache__
+    .venv
+    venv
+    bin
+    pkg
+  )
+  local RSYNC_EXCLUDE=()
+  for e in "${EXCLUDES[@]}"; do
+    RSYNC_EXCLUDE+=(--exclude="$e")
+  done
+
+  # file-patterns to skip
+  RSYNC_EXCLUDE+=(--exclude='*.pyc' --exclude='*.pyo' --exclude='*.o' --exclude='*.so' --exclude='*.exe')
+
+  rsync -av --progress "${RSYNC_EXCLUDE[@]}" "$@"
+}
+alias copyproject=copyprojectfunc
+
+# Git update function
+gitupdatefunc() {
+  if [ -z "$1" ]; then
+    echo "Usage: gitupdate <branch>"
+    return 1
+  fi
+  git checkout "$1" && git fetch --all && git pull
+}
+alias gitupdate=gitupdatefunc
+
+# Git Worktree Checkout
+gwco() {
+    if [ -z "$1" ]; then
+        echo "Usage: git worktree checkout <worktree-name-or-path>"
+        echo "Available worktrees:"
+        command git worktree list
+        return 1
+    fi
+    
+    # Check if argument is a full path
+    if [ -d "$1" ]; then
+        cd "$1"
+        echo "Switched to worktree: $1"
+        return 0
+    fi
+    
+    # Try to find worktree by partial name or basename match
+    local target="$1"
+    local worktree_path
+    
+    # First try exact basename match
+    worktree_path=$(command git worktree list --porcelain | grep "^worktree " | cut -d' ' -f2- | while read -r path; do
+        if [[ "$(basename "$path")" == "$target" ]]; then
+            echo "$path"
+            break
+        fi
+    done)
+    
+    # If no exact match, try partial match
+    if [ -z "$worktree_path" ]; then
+        worktree_path=$(command git worktree list --porcelain | grep "^worktree " | cut -d' ' -f2- | grep -F "$target" | head -n1)
+    fi
+    
+    if [ -n "$worktree_path" ] && [ -d "$worktree_path" ]; then
+        cd "$worktree_path"
+        echo "Switched to worktree: $worktree_path"
+    else
+        echo "Error: Worktree '$1' not found"
+        echo "Available worktrees:"
+        command git worktree list
+        return 1
+    fi
+}
+
+# Git command wrapper
+git() {
+    if [[ "$1" == "worktree" && "$2" == "checkout" ]]; then
+        shift 2
+        gwco "$@"
+    else
+        command git "$@"
+    fi
+}
+
+# Tab completion for gwco
+_gwco() {
+    local -a worktrees
+    worktrees=(${(f)"$(git worktree list --porcelain 2>/dev/null | grep "^worktree " | cut -d' ' -f2-)"})
+    
+    local -a worktree_descriptions
+    for worktree in $worktrees; do
+        if [ -d "$worktree" ]; then
+            local branch=$(command git -C "$worktree" branch --show-current 2>/dev/null)
+            if [ -n "$branch" ]; then
+                worktree_descriptions+=("$worktree:$branch")
+            else
+                worktree_descriptions+=("$worktree")
+            fi
+        fi
+    done
+    
+    _describe 'worktree' worktree_descriptions
+}
+
+compdef _gwco gwco
+
+# Git worktree completion extension
+_git-worktree() {
+    local curcontext="$curcontext" state line
+    typeset -A opt_args
+
+    _arguments -C \
+        '1: :->command' \
+        '*::arg:->args'
+
+    case $state in
+    command)
+        local -a subcommands
+        subcommands=(
+            'add:Create a new worktree'
+            'list:List worktrees'
+            'lock:Lock a worktree'
+            'move:Move a worktree'
+            'prune:Prune worktree information'
+            'remove:Remove a worktree'
+            'repair:Repair worktree administrative files'
+            'unlock:Unlock a worktree'
+            'checkout:Switch to a worktree directory'
+        )
+        _describe -t commands 'git worktree subcommand' subcommands
+        ;;
+    args)
+        case $line[1] in
+        checkout|remove)
+            local -a worktrees
+            worktrees=(${(f)"$(command git worktree list --porcelain 2>/dev/null | grep "^worktree " | cut -d' ' -f2-)"})
+            _describe 'worktree' worktrees
+            ;;
+        *)
+            _files
+            ;;
+        esac
+        ;;
+    esac
+}
 
 export PATH="$HOME/.local/bin:$PATH"
 
