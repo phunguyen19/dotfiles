@@ -20,6 +20,7 @@ git clone git@github.com:phunguyen19/dotfiles.git ~/workspaces/personal/dotfiles
 | `alacritty/`         | `~/.config/alacritty` |
 
 tmux plugins are installed by TPM into `~/.tmux/plugins` and are not tracked.
+Machine-specific shell setup goes in `zsh/local.zsh` (gitignored, see `local.example.zsh`).
 nvim reads machine-specific settings from `nvim/lua/rpn/local.lua` (gitignored, see `local.example.lua`).
 
 ## Test
