@@ -6,6 +6,7 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	opts = {
 		preview = {
+			enable = false,
 			icon_provider = "devicons",
 		},
 	},
