@@ -9,6 +9,19 @@ return {
 		vim.g.loaded_netrwPlugin = 1
 
 		nvimtree.setup({
+			-- Default <C-k> (info popup) shadows vim-tmux-navigator pane switching
+			on_attach = function(bufnr)
+				local api = require("nvim-tree.api")
+				api.config.mappings.default_on_attach(bufnr)
+				vim.keymap.del("n", "<C-k>", { buffer = bufnr })
+				vim.keymap.set("n", "<M-k>", api.node.show_info_popup, {
+					buffer = bufnr,
+					noremap = true,
+					silent = true,
+					nowait = true,
+					desc = "nvim-tree: Info",
+				})
+			end,
 			view = {
 				width = 35,
 				number = true,

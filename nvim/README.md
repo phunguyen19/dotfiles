@@ -117,6 +117,7 @@ Machine-specific settings (Obsidian vaults) go in the gitignored `lua/rpn/local.
 | `n` | `<leader>ef` | Toggle file explorer on current file |
 | `n` | `<leader>ec` | Collapse file explorer |
 | `n` | `<leader>er` | Refresh file explorer |
+| `n` | `<M-k>` | Show node info (in tree; replaces default `<C-k>`) |
 
 ### Telescope (Fuzzy Finding)
 
