@@ -4,8 +4,12 @@ return {
 	"OXY2DEV/markview.nvim",
 	lazy = false,
 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	keys = {
+		{ "<leader>mmw", "<cmd>Markview toggle<CR>", ft = "markdown", desc = "Toggle markview preview" },
+	},
 	opts = {
 		preview = {
+			enable = false,
 			icon_provider = "devicons",
 		},
 	},
