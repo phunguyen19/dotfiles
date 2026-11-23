@@ -42,7 +42,9 @@ return {
 
 				-- Custom Highlights --
 				colors = {}, -- Override default colors
-				highlights = {}, -- Override highlight groups
+				highlights = {
+					NvimTreeCutHL = { fg = "$red", bold = true },
+				}, -- Override highlight groups
 
 				-- Plugins Config --
 				diagnostics = {

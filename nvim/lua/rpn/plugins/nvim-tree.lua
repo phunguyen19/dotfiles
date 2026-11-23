@@ -58,6 +58,10 @@ return {
 			git = {
 				ignore = false,
 			},
+			-- Info messages (e.g. "added to clipboard") trigger the hit-enter prompt
+			notify = {
+				threshold = vim.log.levels.WARN,
+			},
 		})
 
 		-- set keymaps
