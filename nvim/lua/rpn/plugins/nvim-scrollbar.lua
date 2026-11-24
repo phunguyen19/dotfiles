@@ -27,21 +27,17 @@ return {
 		vim.keymap.set("n", "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
 		vim.keymap.set("n", "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
 
-		-- scrollbar: handle color from melange palette (dark a.sel = #403A36),
-		-- transparent bg means the handle needs an explicit color to be visible.
+		-- scrollbar (v2): thumb color from melange palette (dark a.sel = #403A36),
+		-- transparent bg means the thumb needs an explicit color to be visible.
+		-- cursor, diagnostic and search providers are on by default; search reads
+		-- native / and ? directly, so no hlslens wiring is needed for marks.
 		require("scrollbar").setup({
-			handle = { color = "#403A36" },
-			handlers = {
-				cursor = true,
-				diagnostic = true,
+			providers = {
 				gitsigns = true,
-				handle = true,
-				search = true,
+			},
+			scrollbar = {
+				thumb = { highlight = { bg = "#403A36" } },
 			},
 		})
-
-		-- handlers that must be wired to their source plugins
-		require("scrollbar.handlers.search").setup()
-		require("scrollbar.handlers.gitsigns").setup()
 	end,
 }
