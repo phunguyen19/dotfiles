@@ -568,7 +568,6 @@ To customize this setup:
 - LSP uses the Neovim 0.11+ `vim.lsp.config()` / `vim.lsp.enable()` API in `lua/rpn/plugins/lsp/lspconfig.lua`. Never use `lspconfig.setup()`.
 - Treesitter is managed by `romus204/tree-sitter-manager.nvim`. Never reintroduce `nvim-treesitter`: it breaks on 0.12+. tree-sitter-manager provides no indent; incremental selection is a native module (`lua/rpn/core/treesitter-incsel.lua`).
 - A language that parses but shows no colors is missing its highlight queries. Fix with `:TSUninstall <lang>` then `:TSInstall <lang>`; a plain `:TSInstall` skips it.
-- Orgmode installs its own `org` parser. Do not add `org` to tree-sitter-manager.
 - Format on save uses conform.nvim formatters only (`lsp_fallback = false` is intentional). ESLint fixes on save run separately from the LSP autocmd.
 - Things 3: never touch the Things SQLite database, not even read-only. Write through the `things:///` URL scheme, read through JXA with bulk property fetches. See [lua/rpn/things/README.md](lua/rpn/things/README.md).
 - `lua/rpn/telescope/tmux.lua` vendors the telescope-tmux pickers so the current session is listed. `~/.tmux.conf` calls `:Telescope tmux sessions|windows`, so keep those names.

@@ -1,7 +1,6 @@
 # Obsidian keymaps
 
-`epwalsh/obsidian.nvim` (config: `lua/rpn/plugins/obsidian.lua`). Prefix `<leader>O` (capital O —
-`<leader>o` is orgmode, `<leader>n` is org-roam).
+`epwalsh/obsidian.nvim` (config: `lua/rpn/plugins/obsidian.lua`). Prefix `<leader>O` (capital O).
 
 Vaults: `Programming` (`~/obsidian/Programming`), `HexTrust` (`~/obsidian/HexTrust`). The plugin
 loads when you open a `.md` file inside a vault, or on any `<leader>O` keymap.
