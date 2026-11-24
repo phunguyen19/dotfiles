@@ -21,6 +21,26 @@ return {
 					nowait = true,
 					desc = "nvim-tree: Info",
 				})
+
+				-- Yank path of node under cursor (shadows global buffer-path yanks)
+				local yank = require("rpn.core.yank")
+				local function yank_node(modifier, label)
+					local node = api.tree.get_node_under_cursor()
+					if not node or not node.absolute_path then
+						return
+					end
+					local path = modifier and vim.fn.fnamemodify(node.absolute_path, modifier) or node.absolute_path
+					yank.yank_path(path, label)
+				end
+				local function opts(desc)
+					return { buffer = bufnr, noremap = true, silent = true, nowait = true, desc = "nvim-tree: " .. desc }
+				end
+				vim.keymap.set("n", "<leader>ya", function()
+					yank_node(nil, "absolute")
+				end, opts("Yank absolute path"))
+				vim.keymap.set("n", "<leader>yr", function()
+					yank_node(":.", "relative")
+				end, opts("Yank relative path"))
 			end,
 			view = {
 				width = 35,
