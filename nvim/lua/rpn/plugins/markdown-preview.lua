@@ -10,6 +10,7 @@ return {
 	end,
 	init = function()
 		vim.g.mkdp_filetypes = { "markdown" }
+		vim.g.mkdp_theme = "dark"
 		-- Replaces the plugin's defaults wholesale, so they are restated here.
 		-- empty_dict: a bare {} would reach the page as an array.
 		vim.g.mkdp_preview_options = {
@@ -26,7 +27,7 @@ return {
 			disable_filename = 0,
 			toc = vim.empty_dict(),
 			side_toc = 1,
-			content_width = "capped",
+			content_width = "default",
 		}
 	end,
 	cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
